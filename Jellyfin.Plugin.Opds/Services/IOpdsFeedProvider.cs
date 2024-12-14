@@ -93,4 +93,30 @@ public interface IOpdsFeedProvider
     /// <param name="baseUrl">The request path base.</param>
     /// <returns>The search description.</returns>
     OpenSearchDescriptionDto GetSearchDescription(string baseUrl);
+
+    /// <summary>
+    /// Gets the list of authors.
+    /// </summary>
+    /// <param name="baseUrl">The request path base.</param>
+    /// <param name="userId">The user id to filter by.</param>
+    /// <returns>The list of authors.</returns>
+    FeedDto GetAuthors(string baseUrl, Guid userId);
+
+    /// <summary>
+    /// Gets the list of authors starting with a specific letter.
+    /// </summary>
+    /// <param name="baseUrl">The request path base.</param>
+    /// <param name="userId">The user id to filter by.</param>
+    /// <param name="letter">The letter to filter by, or "all" for all authors.</param>
+    /// <returns>The list of authors.</returns>
+    FeedDto GetAuthorsByLetter(string baseUrl, Guid userId, string letter);
+
+    /// <summary>
+    /// Gets the list of books by an author.
+    /// </summary>
+    /// <param name="baseUrl">The request path base.</param>
+    /// <param name="userId">The user id to filter by.</param>
+    /// <param name="authorId">The author id.</param>
+    /// <returns>The books by the author.</returns>
+    FeedDto GetBooksByAuthor(string baseUrl, Guid userId, Guid authorId);
 }

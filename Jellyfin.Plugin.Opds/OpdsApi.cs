@@ -328,6 +328,92 @@ public class OpdsApi : ControllerBase
         }
     }
 
+    /// <summary>
+    /// Gets the list of authors.
+    /// </summary>
+    /// <returns>The authors feed xml.</returns>
+    [HttpGet("Authors")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public async Task<ActionResult> GetAuthors()
+    {
+        try
+        {
+            var userId = await AuthorizeAsync().ConfigureAwait(false);
+            var feeds = _opdsFeedProvider.GetAuthors(Request.PathBase, userId);
+            return BuildOutput(feeds);
+        }
+        catch (AuthenticationException)
+        {
+            Response.Headers.Append(AuthHeaderKey, AuthHeaderValue);
+            return StatusCode(StatusCodes.Status401Unauthorized);
+        }
+    }
+
+    /// <summary>
+    /// Gets the list of authors by letter.
+    /// </summary>
+    /// <param name="letter">The letter to filter by, or "all" for all authors.</param>
+    /// <returns>The authors feed xml.</returns>
+    [HttpGet("Authors/letter/{letter}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public async Task<ActionResult> GetAuthorsByLetter([FromRoute] string letter)
+    {
+        try
+        {
+            var userId = await AuthorizeAsync().ConfigureAwait(false);
+            var feeds = _opdsFeedProvider.GetAuthorsByLetter(Request.PathBase, userId, letter);
+            return BuildOutput(feeds);
+        }
+        catch (AuthenticationException)
+        {
+            Response.Headers.Append(AuthHeaderKey, AuthHeaderValue);
+            return StatusCode(StatusCodes.Status401Unauthorized);
+        }
+    }
+
+    /// <summary>
+    /// Gets the list of authors by letter.
+    /// </summary>
+    /// <returns>The authors feed xml.</returns>
+    [HttpGet("Authors/all")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public async Task<ActionResult> GetAllAuthors()
+    {
+        try
+        {
+            var userId = await AuthorizeAsync().ConfigureAwait(false);
+            var feeds = _opdsFeedProvider.GetAuthorsByLetter(Request.PathBase, userId, "all");
+            return BuildOutput(feeds);
+        }
+        catch (AuthenticationException)
+        {
+            Response.Headers.Append(AuthHeaderKey, AuthHeaderValue);
+            return StatusCode(StatusCodes.Status401Unauthorized);
+        }
+    }
+
+    /// <summary>
+    /// Gets the list of books by an author.
+    /// </summary>
+    /// <param name="authorId">The author id.</param>
+    /// <returns>The books feed xml.</returns>
+    [HttpGet("Authors/{authorId}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public async Task<ActionResult> GetBooksByAuthor([FromRoute] Guid authorId)
+    {
+        try
+        {
+            var userId = await AuthorizeAsync().ConfigureAwait(false);
+            var feeds = _opdsFeedProvider.GetBooksByAuthor(Request.PathBase, userId, authorId);
+            return BuildOutput(feeds);
+        }
+        catch (AuthenticationException)
+        {
+            Response.Headers.Append(AuthHeaderKey, AuthHeaderValue);
+            return StatusCode(StatusCodes.Status401Unauthorized);
+        }
+    }
+
     private async Task<Guid> AuthorizeAsync()
     {
         var allowAnonymous = OpdsPlugin.Instance!.Configuration.AllowAnonymousAccess;
